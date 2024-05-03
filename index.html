@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(10, 20px);
+            grid-template-rows: repeat(20, 20px);
+            border: 2px solid #333;
+            background-color: #fff;
+        }
+
+        .cell {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .block {
+            background-color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-board"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const board = document.getElementById('game-board');
+            const boardWidth = 10;
+            const boardHeight = 20;
+            let currentBlock = getRandomBlock();
+            let speed = 100; // 속도를 100ms로 변경
+
+            function getRandomBlock() {
+                const blocks = [
+                    { shape: [['#','#','#','#']] },
+                    { shape: [['#','#'],['#','#']] },
+                    { shape: [['#','.'],['#','#'],['.','#']] },
+                    { shape: [['.','#'],['#','#'],['#','.']] },
+                    { shape: [['#'],['#'],['#'],['#']] },
+                ];
+                return blocks[Math.floor(Math.random() * blocks.length)];
+            }
+
+            function drawBoard() {
+                board.innerHTML = '';
+                for (let row = 0; row < boardHeight; row++) {
+                    for (let col = 0; col < boardWidth; col++) {
+                        const cell = document.createElement('div');
+                        cell.classList.add('cell');
+                        if (row >= currentBlock.y && row < currentBlock.y + currentBlock.shape.length &&
+                            col >= currentBlock.x && col < currentBlock.x + currentBlock.shape[0].length &&
+                            currentBlock.shape[row - currentBlock.y][col - currentBlock.x] === '#') {
+                            cell.classList.add('block');
+                        }
+                        board.appendChild(cell);
+                    }
+                }
+            }
+
+            function moveBlockDown() {
+                currentBlock.y++;
+                drawBoard();
+            }
+
+            setInterval(moveBlockDown, speed);
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowUp') {
+                    speed = 50; // 화살표 위 키를 누를 때 속도를 더 빠르게 변경
+                }
+            });
+
+            document.addEventListener('keyup', (event) => {
+                if (event.key === 'ArrowUp') {
+                    speed = 100; // 화살표 위 키를 떼면 속도를 원래대로 변경
+                }
+            });
+
+            drawBoard();
+        });
+    </script>
+</body>
+</html>
